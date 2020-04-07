@@ -5,7 +5,7 @@ import json
 import subprocess
 sys.path.append('lib')
 
-from ops.charm import EventSource, EventBase, EventsBase, CharmBase, CharmEvents
+from ops.charm import EventSource, EventBase, CharmBase, CharmEvents
 from ops.main import main
 from ops.framework import StoredState, Object
 from ops.model import (

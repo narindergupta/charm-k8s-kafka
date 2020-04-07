@@ -2,7 +2,7 @@ import ipaddress
 import json
 import logging
 
-from ops.framework import EventBase, EventSource, EventsBase, StoredState
+from ops.framework import EventBase, EventSource, EventSetBase, StoredState
 from ops.framework import Object
 
 logger = logging.getLogger(__name__)
@@ -120,7 +120,7 @@ class ZookeeperReady(EventBase):
     pass
 
 
-class ZookeeperClientEvents(EventsBase):
+class ZookeeperClientEvents(EventSetBase):
     zookeeper_available = EventSource(ZookeeperAvailable)
     zookeeper_ready = EventSource(ZookeeperReady)
 
