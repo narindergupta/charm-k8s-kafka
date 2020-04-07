@@ -1,0 +1,17 @@
+"options":
+  "client-port":
+    "description": "Kafka port"
+    "type": "int"
+    "default": !!int "9092"
+  "image":
+    "type": "string"
+    "description": "OCI image"
+    "default": "rocks.canonical.com:443/wurstmeister/kafka:2.12-2.2.1"
+  "listen-on-all-addresses":
+    "type": "boolean"
+    "default": "true"
+    "description": |
+      Whether to use 0.0.0.0 for the client listening socket or not (all IPv4 and IPv6 addresses).
+      Kafka does not support multiple "listen" directives and the charm will error out if there are
+      cross-model relations that result in multiple *different* bind-addresses available for relations of the
+      client relation endpoint.

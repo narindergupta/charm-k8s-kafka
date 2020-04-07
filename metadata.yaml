@@ -1,0 +1,28 @@
+name: kafka-k8s
+summary: Kafka charm for Kubernetes.
+maintainers:
+  - Narinder Gupta <narinder.gupta@canonical.com>
+description: |
+  A CAAS charm to deploy Kafka.
+min-juju-version: 2.7.4
+tags:
+  - application
+  - database
+series:
+  - kubernetes
+provides:
+  kafka:
+    interface: kafka
+requires:
+  zookeeper:
+    interface: zookeeper
+peers:
+  cluster:
+    interface: cluster
+deployment:
+  type: stateful
+  service: cluster
+storage:
+  database:
+    type: filesystem
+    location: /var/lib/kafka
