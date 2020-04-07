@@ -67,7 +67,8 @@ class KafkaCharm(CharmBase):
 
     def on_start(self, event):
         logging.info('START: do nothing wait for zookeeper')
-        self.model.unit.status = WaitingStatus('Waiting for Zookeeper to be ready')
+        if (self.model.pod._backend.is_leader()):
+            self.model.app.status = WaitingStatus('Waiting for Zookeeper to be ready')
 
     def on_stop(self, event):
         logging.info('STOP')
@@ -102,8 +103,8 @@ class KafkaCharm(CharmBase):
         units = self._unit
         if peer_relation is not None:
             self._unit =  len(peer_relation.units) + 1
-        if self._unit != units:
-            self.on.config_changed.emit()
+        #if self._unit != units:
+        self.on.config_changed.emit()
 
     def on_cluster_modified(self, event):
         logging.info('on_cluster_modified')
@@ -127,7 +128,7 @@ class KafkaCharm(CharmBase):
                 if self.state.podSpec != podSpec:
                     self.model.pod.set_spec(podSpec)
                     self.state.podSpec = podSpec
-            self.on.update_status.emit()
+        self.on.update_status.emit()
 
     def on_zookeeper_ready(self, event):
         logging.info('on_zookeeper_ready')
