@@ -38,7 +38,7 @@ containers:
         --override message.max.bytes=1000012 \
         --override min.insync.replicas=1 \
         --override num.io.threads=8 \
-        --override num.network.threads=%(kafka-units)s \
+        --override num.network.threads=%(kafka-thread)s \
         --override num.recovery.threads.per.data.dir=1 \
         --override num.replica.fetchers=1 \
         --override offset.metadata.max.bytes=4096 \
@@ -49,7 +49,7 @@ containers:
         --override offsets.retention.minutes=1440 \
         --override offsets.topic.compression.codec=0 \
         --override offsets.topic.num.partitions=50 \
-        --override offsets.topic.replication.factor=%(kafka-units)s \
+        --override offsets.topic.replication.factor=%(kafka-replication)s \
         --override offsets.topic.segment.bytes=104857600 \
         --override queued.max.requests=500 \
         --override quota.consumer.default=9223372036854775807 \
@@ -95,7 +95,7 @@ containers:
         --override log.preallocate=false \
         --override log.retention.check.interval.ms=300000 \
         --override max.connections.per.ip=2147483647 \
-        --override num.partitions=1 \
+        --override num.partitions=%(kafka-partition)s \
         --override producer.purgatory.purge.interval.requests=1000 \
         --override replica.fetch.backoff.ms=1000 \
         --override replica.fetch.max.bytes=1048576 \

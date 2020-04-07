@@ -111,50 +111,31 @@ class KafkaCharm(CharmBase):
 
     def on_update_status(self, event):
         logging.info('UPDATE STATUS')
-        if (self.model.pod._backend.is_leader()):
-            if self._pod.is_ready:
+        if self._pod.is_ready:
+            logging.info('Pod is ready')
+            self.state.isStarted = True
+            if (self.model.pod._backend.is_leader()):
                 self.model.unit.status = ActiveStatus('ready')
-        else:
-            if self._pod.is_ready:
+            else:
                 self.model.unit.status = ActiveStatus('ready Not a Leader')
-        relation = self.model.get_relation('kafka')
-        if relation is not None:
-            logging.info(relation.data[self.model.unit].get('host'))
 
     def on_config_changed(self, event):
         logging.info('CONFIG CHANGED')
         if self._pod.is_ready:
             if (self.model.pod._backend.is_leader()):
-                self.model.unit.status = MaintenanceStatus('changing configuration')
                 podSpec = self.makePodSpec()
                 if self.state.podSpec != podSpec:
-                    self.model.unit.status = MaintenanceStatus('Configuring pod')
                     self.model.pod.set_spec(podSpec)
                     self.state.podSpec = podSpec
-                if self._pod.is_ready:
-                    self.state.isStarted = True
-                    self.model.unit.status = ActiveStatus('ready')
-                else:
-                    self.model.unit.status = MaintenanceStatus('Starting Pod')
-            else:
-                if self._pod.is_ready:
-                    self.state.isStarted = True
-                    self.model.unit.status = ActiveStatus('ready Not a Leader')
+            self.on.update_status.emit()
 
     def on_zookeeper_ready(self, event):
         logging.info('on_zookeeper_ready')
         if (self.model.pod._backend.is_leader()):
-            self.model.unit.status = MaintenanceStatus('Started creating pod')
             podSpec = self.makePodSpec()
             self.model.pod.set_spec(podSpec)
             self.state.podSpec = podSpec
-            if self._pod.is_ready:
-                self.state.isStarted = True
-                self.model.unit.status = ActiveStatus('ready')
-                logging.info('Pod is ready')
-                return
-            self.model.unit.status = MaintenanceStatus('Pod is not ready')
-            logging.info('Pod is not ready')
+        self.on.update_status.emit()
 
     def getZookeeperURI(self):
         if self.zookeeper.is_joined:
@@ -172,7 +153,9 @@ class KafkaCharm(CharmBase):
         logging.info(self._unit)
         data = {
             "name": self.model.app.name,
-            "kafka-units": int(self._unit),
+            "kafka-thread": self.model.config['default-net-threads'],
+            "kafka-partition": self.model.config['default-partitions'],
+            "kafka-replication": self.model.config['default-replication-factor'],
             "docker_image": dockerImage,
             "advertised-port": self.model.config['client-port'],
             "advertised-hostname": self.cluster.listen_address,

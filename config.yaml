@@ -15,3 +15,20 @@
       Kafka does not support multiple "listen" directives and the charm will error out if there are
       cross-model relations that result in multiple *different* bind-addresses available for relations of the
       client relation endpoint.
+  "default-partitions":
+    "default": !!int "1"
+    "type": "int"
+    "description": |-
+      The default number of log partitions per topic (num.partitions)
+  "default-replication-factor":
+    "default": !!int "1"
+    "type": "int"
+    "description": |-
+      Default replication factor for automatically created topics
+      (default.replication.factor)
+  "default-net-threads":
+    "default": !!int "1"
+    "type": "int"
+    "description": |-
+      Default replication factor for automatically created topics
+      (default.replication.factor)
