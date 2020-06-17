@@ -75,7 +75,7 @@ class KafkaCharm(CharmBase):
 
     def on_upgrade_charm(self, event):
         logging.info('UPGRADE')
-        self.on.config_changed.emit()
+        self._update_pod_spec()
 
     def on_cluster_relation_changed(self, event):
         self.getUnits()
@@ -104,7 +104,7 @@ class KafkaCharm(CharmBase):
         if peer_relation is not None:
             self._unit =  len(peer_relation.units) + 1
         #if self._unit != units:
-        self.on.config_changed.emit()
+        self._update_pod_spec()
 
     def on_cluster_modified(self, event):
         logging.info('on_cluster_modified')
@@ -122,6 +122,9 @@ class KafkaCharm(CharmBase):
 
     def on_config_changed(self, event):
         logging.info('CONFIG CHANGED')
+        self._update_pod_spec()
+
+    def _update_pod_spec(self):
         if self._pod.is_ready:
             if (self.model.pod._backend.is_leader()):
                 podSpec = self.makePodSpec()
